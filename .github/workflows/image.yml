@@ -2,7 +2,7 @@ name: Docker Build and Cache
 
 on:
   push:
-    branches: [ v0.5.0 ]
+    branches: [ b0.5.0 ]
 
 jobs:
   build:
