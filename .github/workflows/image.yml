@@ -1,0 +1,32 @@
+name: Docker Build and Cache
+
+on:
+  push:
+    branches: [ v0.5.0 ]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Build Docker image
+      run: |
+        IMG=cluster_api_provider_bringyourownhost/cluster-api-byoh-controller:v0.5.0 make docker-build
+        
+    - name: Export Docker image
+      run: |
+        docker save cluster_api_provider_bringyourownhost/cluster-api-byoh-controller:v0.5.0 > image-v0.5.0.tar
+        
+    - name: Cache Docker image
+      uses: actions/cache@v2
+      with:
+        path: image-v0.5.0.tar
+        key: ${{ runner.os }}-docker-${{ github.sha }}
+        
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: docker-image
+        path: image-v0.5.0.tar
